@@ -1,14 +1,14 @@
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Scanner;
+import java.util.*;
 
 public class Algorithms {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        //TODO: replace those stubs with tests
         /*
         System.out.println(changeMoney(997));
         */
+
         /*
         int n = scanner.nextInt();
         int w = scanner.nextInt();
@@ -19,9 +19,9 @@ public class Algorithms {
         }
         System.out.println(maxLoot(n, w,  items));
         */
+
         /*
         int n = scanner.nextInt();
-
         long [] profits = new long[n];
         long [] clicks = new long[n];
         for (int i = 0; i < n; i++) {
@@ -32,6 +32,81 @@ public class Algorithms {
         }
         System.out.println(maxProfit(n,profits,clicks));
         */
+        
+        /*
+        int n = scanner.nextInt();
+        int [][] segments = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            segments[i][0] = scanner.nextInt();
+            segments[i][1] = scanner.nextInt();
+        }
+        System.out.println(minPoints(n, segments));
+        */
+
+        /*
+        int n = scanner.nextInt();
+        System.out.println(maxPrizes(n));
+        */
+
+        /*
+        int n = scanner.nextInt();
+        List <Integer> pieces = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            pieces.add(scanner.nextInt());
+        }
+        System.out.println(maxSalary(n,pieces));
+        */
+    }
+
+    private static String maxSalary(int n, List<Integer> pieces) {
+        StringBuilder answer = new StringBuilder();
+        while (!pieces.isEmpty()) {
+            int maxNumber = 0;
+            for (int i: pieces){
+                if(IsGreaterOrEqual(i,maxNumber)){
+                    maxNumber = i;
+                }
+            }
+            answer.append(maxNumber);
+            pieces.remove(Integer.valueOf(maxNumber));
+        }
+        return answer.toString();
+    }
+
+    private static boolean IsGreaterOrEqual(int i, int maxNumber) {
+        String one = String.valueOf(i) + String.valueOf(maxNumber);
+        String two = String.valueOf(maxNumber) + String.valueOf(i);
+        return (Integer.parseInt(one) >= Integer.parseInt(two));
+    }
+
+    private static int maxPrizes(int n) {
+        int k = 0;
+        int remaining = n;
+        for (int i = 1; i <= n; i++) {
+            k++;
+            remaining-=i;
+            if(remaining<=i){
+                break;
+            }
+        }
+        return k;
+    }
+
+    private static int minPoints(int n, int[][] segments) {
+        Arrays.sort(segments, Comparator.comparingInt(o -> o[1]));
+        List<Integer> points = new ArrayList<>();
+        int totalPoints = 0;
+        int endpoint = 0;
+        for (int i = 0; i < n; i++) {
+            if(segments[i][0]>endpoint) {
+                totalPoints++;
+                points.add(endpoint);
+                endpoint = segments[i][1];
+            }
+        }
+        points.remove(0);
+        //TODO: return both totalPoints and points list
+        return totalPoints;
     }
 
     private static long maxProfit(int n, long[] profits, long[] clicks) {
