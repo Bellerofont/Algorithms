@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class Algorithms {
+public class GreedyAlgorithms {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
