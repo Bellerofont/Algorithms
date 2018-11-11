@@ -1,3 +1,5 @@
+package EdxAlgorithms;
+
 import java.util.*;
 
 public class GreedyAlgorithms {
@@ -145,5 +147,4 @@ public class GreedyAlgorithms {
     private static int changeMoney(int i) {
         return i/10+i%10/5+i%5;
     }
-
 }
