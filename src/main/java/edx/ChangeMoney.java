@@ -1,4 +1,4 @@
-package EdxAlgorithms;
+package edx;
 
 public class ChangeMoney {
 

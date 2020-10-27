@@ -1,4 +1,4 @@
-package EdxAlgorithms;
+package edx;
 
 import java.util.*;
 
