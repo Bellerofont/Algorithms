@@ -1,7 +1,10 @@
 package misc
 
-class CodeSignalScala {
+import scala.annotation.tailrec
 
+object CodeSignalScala extends App {
+
+  @tailrec
   def reverseInParentheses(inputString: String): String = {
     if (inputString.contains("(")) {
       val start = inputString.lastIndexOf("(")
