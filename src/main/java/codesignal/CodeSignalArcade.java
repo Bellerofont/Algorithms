@@ -1,9 +1,8 @@
-package misc;
+package codesignal;
 
 import java.util.*;
-import java.util.stream.IntStream;
 
-public class CodeSignal {
+public class CodeSignalArcade {
 
     static boolean almostIncreasingSequence(int[] sequence) {
         int count = 0;
