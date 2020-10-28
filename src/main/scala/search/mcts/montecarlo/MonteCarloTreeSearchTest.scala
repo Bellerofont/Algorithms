@@ -11,4 +11,7 @@ object MonteCarloTreeSearchTest extends App {
     player = State.getOpponent(player)
     movesLeft -= 1
   }
+
+  board.printBoard()
+  println(movesLeft)
 }

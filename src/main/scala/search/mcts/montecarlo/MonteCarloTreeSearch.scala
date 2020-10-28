@@ -24,13 +24,11 @@ object MonteCarloTreeSearch {
   }
 
   @tailrec
-  final def backPropagation(nodeToExplore: Node, playerNo: Int): Unit =
-    if (nodeToExplore.parent.isDefined) {
-      nodeToExplore.state.incrementVisit()
-      if (nodeToExplore.state.playerNo == playerNo) nodeToExplore.state.addScore(WIN_SCORE)
-
-      backPropagation(nodeToExplore.parent.get, playerNo)
-    }
+  final def backPropagation(nodeToExplore: Node, playerNo: Int): Unit = {
+    nodeToExplore.state.incrementVisit()
+    if (nodeToExplore.state.playerNo == playerNo) nodeToExplore.state.addScore(WIN_SCORE)
+    if (nodeToExplore.parent.isDefined) backPropagation(nodeToExplore.parent.get, playerNo)
+  }
 
   def simulateRandomPlayout(node: Node): BoardStatus = {
     var boardStatus = node.state.board.checkStatus
@@ -72,7 +70,6 @@ object MonteCarloTreeSearch {
 
     val winner = tree.root.getChildWithMaxScore
     tree.root = winner
-    winner.state.board.printBoard()
     winner.state.board
   }
 
