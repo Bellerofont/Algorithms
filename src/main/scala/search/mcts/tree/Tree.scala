@@ -1,3 +1,3 @@
 package search.mcts.tree
 
-case class Tree(var root: Node)
+class Tree(var root: Node)

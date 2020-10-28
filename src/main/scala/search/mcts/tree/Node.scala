@@ -7,8 +7,6 @@ import scala.util.Random
 
 class Node(val state: State, val parent: Option[Node], val childArray: ArrayBuffer[Node]) {
 
-  def addChild(node: Node): Unit = childArray += node
-
   def getRandomChildNode: Node = Random.shuffle(childArray).head
 
   def getChildWithMaxScore: Node = childArray.maxBy(_.state.visitCount)

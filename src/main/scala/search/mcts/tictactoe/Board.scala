@@ -1,12 +1,6 @@
 package search.mcts.tictactoe
 
-import scala.collection.mutable.ArrayBuffer
-
-class Board(val boardSize: Int = 3) {
-
-  private val boardValues = ArrayBuffer.fill(boardSize, boardSize)(0)
-
-  private var totalMoves = 0
+case class Board(boardSize: Int, boardValues: Vector[Vector[Int]], totalMoves: Int = 0) {
 
   def emptyPositions: IndexedSeq[Position] =
     for {
@@ -14,10 +8,11 @@ class Board(val boardSize: Int = 3) {
       j <- 0 until boardSize if boardValues(i)(j) == 0
     } yield Position(i, j)
 
-  def performMove(player: Int, position: Position): Unit = {
-    totalMoves += 1
-    boardValues(position.x)(position.y) = player
-  }
+  def performMove(player: Int, position: Position): Board =
+    this.copy(
+      boardValues = boardValues.updated(position.x, boardValues(position.x).updated(position.y, player)),
+      totalMoves = totalMoves + 1
+    )
 
   def checkStatus: BoardStatus = {
     val rows = for {
@@ -38,7 +33,7 @@ class Board(val boardSize: Int = 3) {
       i <- 0 until boardSize
     } yield boardValues(i)(boardSize - 1 - i))
 
-    val result = rows.addAll(columns).addOne(diag1).addOne(diag2).find(_ != 0)
+    val result = (rows :+ columns :+ diag1 :+ diag2).find(_ != 0)
 
     (result, emptyPositions.isEmpty) match {
       case (Some(1), _) => P1
@@ -53,4 +48,13 @@ class Board(val boardSize: Int = 3) {
 
   def printBoard(): Unit =
     println(boardValues.map(_.mkString(" ")).mkString("\n"))
+
+  def printBoardFlat(): Unit =
+    println(boardValues.flatten.mkString(" "))
+}
+
+object Board {
+  def apply(boardSize: Int): Board                   = new Board(boardSize, Vector.fill(boardSize, boardSize)(0))
+  def apply(boardValues: Vector[Vector[Int]]): Board = new Board(boardValues.length, boardValues)
+  def apply(): Board                                 = new Board(3, Vector.fill(3, 3)(0))
 }

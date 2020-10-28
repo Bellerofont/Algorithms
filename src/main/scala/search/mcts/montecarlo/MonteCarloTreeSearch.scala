@@ -17,7 +17,7 @@ object MonteCarloTreeSearch {
 
   def expandNode(node: Node): Unit = {
     val newNodes = node.state.getAllPossibleStates.map { state =>
-      val newState = new State(state.getOpponent)
+      val newState = new State(state.getOpponent, state.board)
       new Node(newState, Some(node), ArrayBuffer.empty[Node])
     }
     node.childArray ++= newNodes
@@ -55,11 +55,13 @@ object MonteCarloTreeSearch {
 
     val opponent = State.getOpponent(playerNo)
     val state    = new State(opponent, board)
-    val tree     = Tree(new Node(state, None, ArrayBuffer.empty[Node]))
+    val tree     = new Tree(new Node(state, None, ArrayBuffer.empty[Node]))
 
     while (System.currentTimeMillis() < end) {
       val promisingNode = selectPromisingNode(tree.root)
+//      println(s"BEFORE ${promisingNode.parent} ${promisingNode.childArray.map(_.state.playerNo)}")
       if (promisingNode.state.board.checkStatus == InProgress) expandNode(promisingNode)
+//      println(s"AFTER ${promisingNode.parent} ${promisingNode.childArray.map(_.state.playerNo)}")
 
       val playoutResult = simulateRandomPlayout(
         if (promisingNode.childArray.nonEmpty) promisingNode.getRandomChildNode else promisingNode
@@ -70,6 +72,7 @@ object MonteCarloTreeSearch {
 
     val winner = tree.root.getChildWithMaxScore
     tree.root = winner
+    winner.state.board.printBoardFlat()
     winner.state.board
   }
 

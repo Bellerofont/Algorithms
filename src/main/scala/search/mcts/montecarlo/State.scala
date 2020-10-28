@@ -1,23 +1,27 @@
 package search.mcts.montecarlo
 
-import search.mcts.tictactoe.Board
+import search.mcts.tictactoe.{Board, Position}
 
 import scala.util.Random
 
-class State(var playerNo: Int, val board: Board = new Board) {
+class State(var playerNo: Int, var board: Board) {
 
   var winScore: Double = 0
   var visitCount = 0
 
   def randomPlay(): Unit = {
-   board.performMove(playerNo, Random.shuffle(board.emptyPositions).head)
+   performMove(Random.shuffle(board.emptyPositions).head)
+  }
+
+  def performMove(position: Position): Unit = {
+    board = board.performMove(playerNo, position)
   }
 
   def getAllPossibleStates: IndexedSeq[State] = {
-    this.board.emptyPositions.map { position =>
-      val player = getOpponent
-      val newState = new State(player)
-      newState.board.performMove(playerNo, position)
+    val player = getOpponent
+    board.emptyPositions.map { position =>
+      val newState = new State(player, board)
+      newState.performMove(position)
       newState
     }
   }
