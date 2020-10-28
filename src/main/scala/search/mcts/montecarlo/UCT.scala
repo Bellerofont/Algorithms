@@ -7,7 +7,7 @@ object UCT {
   private val squareRoot2 = Math.sqrt(2)
 
   def uctValue(totalVisit: Int, nodeWinScore: Double, nodeVisit: Int): Double = {
-    if (nodeVisit == 0) Integer.MAX_VALUE
+    if (nodeVisit == 0) Int.MaxValue
     else nodeWinScore / nodeVisit + squareRoot2 * Math.sqrt(Math.log(totalVisit) / nodeVisit)
   }
 

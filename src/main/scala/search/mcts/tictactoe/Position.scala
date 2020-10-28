@@ -1,3 +1,3 @@
 package search.mcts.tictactoe
 
-case class Position()
+case class Position(x: Int, y: Int)
