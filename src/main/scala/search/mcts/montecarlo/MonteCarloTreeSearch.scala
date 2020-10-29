@@ -18,33 +18,29 @@ object MonteCarloTreeSearch {
   def expandNode(node: Node): Unit = {
     val newNodes = node.state.getAllPossibleStates.map { state =>
       val newState = new State(state.getOpponent, state.board)
-      new Node(newState, Some(node), ArrayBuffer.empty[Node])
+      Node(newState, Some(node), ArrayBuffer.empty[Node])
     }
-    node.childArray ++= newNodes
+    node.addChildren(newNodes)
   }
 
   @tailrec
   final def backPropagation(nodeToExplore: Node, playerNo: Int): Unit = {
-    nodeToExplore.state.incrementVisit()
-    if (nodeToExplore.state.playerNo == playerNo) nodeToExplore.state.addScore(WIN_SCORE)
+    nodeToExplore.incrementVisit()
+    if (nodeToExplore.state.playerNo == playerNo) nodeToExplore.addScore(WIN_SCORE)
     if (nodeToExplore.parent.isDefined) backPropagation(nodeToExplore.parent.get, playerNo)
   }
 
   def simulateRandomPlayout(node: Node): BoardStatus = {
     var boardStatus = node.state.board.checkStatus
-    val tempState   = node.state
-    if (boardStatus.status == node.state.getOpponent) {
-      node.parent.get.state.addScore(Int.MinValue)
-      boardStatus
-    } else {
+    var tempState   = node.state
+    if (boardStatus.status == node.state.getOpponent)
+      node.parent.get.addScore(Int.MinValue)
+    else
       while (boardStatus == InProgress) {
-        tempState.togglePlayer()
-        tempState.randomPlay()
+        tempState = tempState.copy(tempState.getOpponent, tempState.randomPlay())
         boardStatus = tempState.board.checkStatus
       }
-      boardStatus
-    }
-
+    boardStatus
   }
 
   private def getMillisForCurrentLevel = 2 * (level - 1) + 1
@@ -55,13 +51,11 @@ object MonteCarloTreeSearch {
 
     val opponent = State.getOpponent(playerNo)
     val state    = new State(opponent, board)
-    val tree     = new Tree(new Node(state, None, ArrayBuffer.empty[Node]))
+    val tree     = Tree(Node(state, None, ArrayBuffer.empty[Node]))
 
     while (System.currentTimeMillis() < end) {
       val promisingNode = selectPromisingNode(tree.root)
-//      println(s"BEFORE ${promisingNode.parent} ${promisingNode.childArray.map(_.state.playerNo)}")
       if (promisingNode.state.board.checkStatus == InProgress) expandNode(promisingNode)
-//      println(s"AFTER ${promisingNode.parent} ${promisingNode.childArray.map(_.state.playerNo)}")
 
       val playoutResult = simulateRandomPlayout(
         if (promisingNode.childArray.nonEmpty) promisingNode.getRandomChildNode else promisingNode
@@ -72,7 +66,8 @@ object MonteCarloTreeSearch {
 
     val winner = tree.root.getChildWithMaxScore
     tree.root = winner
-    winner.state.board.printBoardFlat()
+    winner.state.board.printBoard()
+    println()
     winner.state.board
   }
 

@@ -33,7 +33,7 @@ case class Board(boardSize: Int, boardValues: Vector[Vector[Int]], totalMoves: I
       i <- 0 until boardSize
     } yield boardValues(i)(boardSize - 1 - i))
 
-    val result = (rows :+ columns :+ diag1 :+ diag2).find(_ != 0)
+    val result = (rows :++ columns :+ diag1 :+ diag2).find(_ != 0)
 
     (result, emptyPositions.isEmpty) match {
       case (Some(1), _) => P1
@@ -50,7 +50,7 @@ case class Board(boardSize: Int, boardValues: Vector[Vector[Int]], totalMoves: I
     println(boardValues.map(_.mkString(" ")).mkString("\n"))
 
   def printBoardFlat(): Unit =
-    println(boardValues.flatten.mkString(" "))
+    println(s"BOARD: ${boardValues.flatten.mkString(" ")}")
 }
 
 object Board {

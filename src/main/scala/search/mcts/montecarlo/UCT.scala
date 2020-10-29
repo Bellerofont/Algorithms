@@ -10,7 +10,6 @@ object UCT {
     if (nodeVisit == 0) Int.MaxValue
     else nodeWinScore / nodeVisit + squareRoot2 * Math.sqrt(Math.log(totalVisit) / nodeVisit)
 
-  def findBestNodeWithUCT(node: Node): Node = {
+  def findBestNodeWithUCT(node: Node): Node =
     node.childArray.maxBy(c => uctValue(node.state.visitCount, c.state.winScore, c.state.visitCount))
-  }
 }
