@@ -6,8 +6,8 @@ import scala.util.Random
 
 case class State(playerNo: Int, board: Board, winScore: Double = 0, visitCount: Int = 0) {
 
-  def randomPlay(): Board = {
-   performMove(Random.shuffle(board.emptyPositions).head)
+  def randomPlay(): State = {
+   this.copy(board = performMove(Random.shuffle(board.emptyPositions).head))
   }
 
   def performMove(position: Position): Board = {
@@ -22,6 +22,8 @@ case class State(playerNo: Int, board: Board, winScore: Double = 0, visitCount: 
   }
 
   def getOpponent: Int = State.getOpponent(this.playerNo)
+
+  def togglePlayer(): State = this.copy(playerNo = getOpponent)
 }
 
 object State {

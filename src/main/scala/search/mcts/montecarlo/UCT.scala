@@ -2,6 +2,8 @@ package search.mcts.montecarlo
 
 import search.mcts.tree.Node
 
+import scala.util.Random
+
 object UCT {
 
   private val squareRoot2 = Math.sqrt(2)
@@ -11,5 +13,5 @@ object UCT {
     else nodeWinScore / nodeVisit + squareRoot2 * Math.sqrt(Math.log(totalVisit) / nodeVisit)
 
   def findBestNodeWithUCT(node: Node): Node =
-    node.childArray.maxBy(c => uctValue(node.state.visitCount, c.state.winScore, c.state.visitCount))
+    Random.shuffle(node.childArray).maxBy(c => uctValue(node.state.visitCount, c.state.winScore, c.state.visitCount))
 }

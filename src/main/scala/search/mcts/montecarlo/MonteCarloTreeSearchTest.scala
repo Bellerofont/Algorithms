@@ -30,7 +30,7 @@ object MonteCarloTreeSearchTest {
   }
 
   @Test
-  def givenEmptyBoard_whenPerformMove_thenLessAvailablePositions(): Unit = {
+  def performMoveEmptyBoard(): Unit = {
     var board = Board()
     val initAvailablePositions = board.emptyPositions.size
     board = board.performMove(P1.status, Position(1, 1))
@@ -40,8 +40,8 @@ object MonteCarloTreeSearchTest {
   }
 
   @Test
-  def givenInitBoardState_whenGetAllPossibleStates_thenNonEmptyList(): Unit = {
-    val initState = new State(1, Board())
+  def getAllPossibleStates(): Unit = {
+    val initState = State(1, Board())
     val possibleStates = initState.getAllPossibleStates
     assertEquals(9, possibleStates.length)
     assertTrue(possibleStates.nonEmpty)
@@ -50,16 +50,17 @@ object MonteCarloTreeSearchTest {
   @Test
   def expandNode(): Unit = {
     val emptyBoard = Board()
-    val rootNode = Node(new State(1, emptyBoard), None, ArrayBuffer.empty[Node])
+    val rootNode = Node(State(1, emptyBoard), None, ArrayBuffer.empty[Node])
     MonteCarloTreeSearch.expandNode(rootNode)
     assertEquals(9, rootNode.childArray.length)
     assertTrue(rootNode.childArray.forall(_.parent.contains(rootNode)))
+    assertTrue(rootNode.childArray.forall(_.state.playerNo != rootNode.state.playerNo))
   }
 
   @Test
   def backPropagateRoot(): Unit = {
     val emptyBoard = Board()
-    val rootNode = Node(new State(1, emptyBoard), None, ArrayBuffer.empty[Node])
+    val rootNode = Node(State(1, emptyBoard), None, ArrayBuffer.empty[Node])
     assertEquals(0, rootNode.state.visitCount)
     MonteCarloTreeSearch.backPropagation(rootNode, 1)
     assertEquals(1, rootNode.state.visitCount)
@@ -68,15 +69,30 @@ object MonteCarloTreeSearchTest {
   @Test
   def simulateRandomPlayout(): Unit = {
     val emptyBoard = Board()
-    val rootNode = Node(new State(1, emptyBoard), None, ArrayBuffer.empty[Node])
+    val rootNode = Node(State(1, emptyBoard), None, ArrayBuffer.empty[Node])
+    MonteCarloTreeSearch.expandNode(rootNode)
+    println(rootNode.childArray.head)
+    println(MonteCarloTreeSearch.simulateRandomPlayout(rootNode.childArray.head))
+    println(rootNode.childArray.head)
   }
 
-//  def backPropagateChildNode(): Unit = {
-//    val emptyBoard = Board()
-//    val rootNode = Node(new State(1, emptyBoard), None, ArrayBuffer.empty[Node])
-//    MonteCarloTreeSearch.expandNode(rootNode)
-//    MonteCarloTreeSearch.backPropagation()
-//  }
+  @Test
+  def backPropagateChildNode(): Unit = {
+    val emptyBoard = Board()
+    val rootNode = Node(State(2, emptyBoard), None, ArrayBuffer.empty[Node])
+
+    MonteCarloTreeSearch.expandNode(rootNode)
+    val playoutResult = MonteCarloTreeSearch.simulateRandomPlayout(rootNode.childArray.head)
+    MonteCarloTreeSearch.backPropagation(rootNode.childArray.head, playoutResult.status)
+    println(rootNode)
+
+    MonteCarloTreeSearch.expandNode(rootNode.childArray.head)
+    val playoutResult2 = MonteCarloTreeSearch.simulateRandomPlayout(rootNode.childArray.head.childArray.head)
+    MonteCarloTreeSearch.backPropagation(rootNode.childArray.head.childArray.head, playoutResult2.status)
+    println(rootNode)
+
+
+  }
 
   @Test
   def checkStatus(): Unit = {
