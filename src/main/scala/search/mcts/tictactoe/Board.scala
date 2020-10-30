@@ -1,6 +1,6 @@
 package search.mcts.tictactoe
 
-case class Board(boardSize: Int, boardValues: Vector[Vector[Int]], totalMoves: Int = 0) {
+case class Board(boardSize: Int, boardValues: Vector[Vector[Int]]) {
 
   def emptyPositions: IndexedSeq[Position] =
     for {
@@ -10,8 +10,7 @@ case class Board(boardSize: Int, boardValues: Vector[Vector[Int]], totalMoves: I
 
   def performMove(player: Int, position: Position): Board =
     this.copy(
-      boardValues = boardValues.updated(position.x, boardValues(position.x).updated(position.y, player)),
-      totalMoves = totalMoves + 1
+      boardValues = boardValues.updated(position.x, boardValues(position.x).updated(position.y, player))
     )
 
   def checkStatus: BoardStatus = {

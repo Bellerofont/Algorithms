@@ -1,7 +1,7 @@
 package search.mcts.montecarlo
 
 import org.junit.jupiter.api.Assertions._
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.{RepeatedTest, Test}
 import search.mcts.tictactoe.{Board, Draw, InProgress, P1, P2, Position}
 import search.mcts.tree.Node
 
@@ -10,11 +10,14 @@ import scala.collection.mutable.ArrayBuffer
 
 object MonteCarloTreeSearchTest {
 
-  @Test
+  @RepeatedTest(100)
   def fullTest(): Unit = {
     var board = Board()
     var player = 1
+    var round = 1
     while (board.checkStatus == InProgress) {
+      println(s"${">" * 25} ROUND $round ${"<" * 25}")
+      round += 1
       board = MonteCarloTreeSearch.findNextMove(board, player)
       player = State.getOpponent(player)
     }
@@ -22,6 +25,14 @@ object MonteCarloTreeSearchTest {
     board.printBoard()
     assertEquals(Draw, winStatus)
   }
+
+  @Test
+  def findNextMove(): Unit = {
+    val board = Board()
+    val player = 1
+    MonteCarloTreeSearch.findNextMove(board, player)
+  }
+
 
   @Test
   def testUCT(): Unit = {
@@ -41,10 +52,11 @@ object MonteCarloTreeSearchTest {
 
   @Test
   def getAllPossibleStates(): Unit = {
-    val initState = State(1, Board())
+    val initState = State(2, Board())
     val possibleStates = initState.getAllPossibleStates
     assertEquals(9, possibleStates.length)
-    assertTrue(possibleStates.nonEmpty)
+    assertTrue(possibleStates.forall(_.playerNo == 1))
+    assertTrue(possibleStates.forall(_.board.boardValues.flatten.contains(1)))
   }
 
   @Test
@@ -69,11 +81,11 @@ object MonteCarloTreeSearchTest {
   @Test
   def simulateRandomPlayout(): Unit = {
     val emptyBoard = Board()
-    val rootNode = Node(State(1, emptyBoard), None, ArrayBuffer.empty[Node])
-    MonteCarloTreeSearch.expandNode(rootNode)
-    println(rootNode.childArray.head)
-    println(MonteCarloTreeSearch.simulateRandomPlayout(rootNode.childArray.head))
-    println(rootNode.childArray.head)
+    val rootNode = Node(State(2, emptyBoard), None, ArrayBuffer.empty[Node])
+    val node = MonteCarloTreeSearch.selectPromisingNode(rootNode)
+    MonteCarloTreeSearch.expandNode(node)
+    println(node)
+    println(MonteCarloTreeSearch.simulateRandomPlayout(node, 2))
   }
 
   @Test
@@ -82,16 +94,14 @@ object MonteCarloTreeSearchTest {
     val rootNode = Node(State(2, emptyBoard), None, ArrayBuffer.empty[Node])
 
     MonteCarloTreeSearch.expandNode(rootNode)
-    val playoutResult = MonteCarloTreeSearch.simulateRandomPlayout(rootNode.childArray.head)
+    val playoutResult = MonteCarloTreeSearch.simulateRandomPlayout(rootNode.childArray.head, 2)
     MonteCarloTreeSearch.backPropagation(rootNode.childArray.head, playoutResult.status)
     println(rootNode)
 
     MonteCarloTreeSearch.expandNode(rootNode.childArray.head)
-    val playoutResult2 = MonteCarloTreeSearch.simulateRandomPlayout(rootNode.childArray.head.childArray.head)
+    val playoutResult2 = MonteCarloTreeSearch.simulateRandomPlayout(rootNode.childArray.head.childArray.head, 1)
     MonteCarloTreeSearch.backPropagation(rootNode.childArray.head.childArray.head, playoutResult2.status)
     println(rootNode)
-
-
   }
 
   @Test
@@ -102,8 +112,8 @@ object MonteCarloTreeSearchTest {
       Vector(2, 1, 1)))
     assertEquals(Draw, boardDraw.checkStatus)
     val boardP1Win = Board(3, Vector(
-      Vector(1, 1, 1),
-      Vector(1, 2, 2),
+      Vector(1, 2, 1),
+      Vector(1, 1, 2),
       Vector(2, 2, 1)))
     assertEquals(P1, boardP1Win.checkStatus)
     val boardP2Win = Board(3, Vector(
@@ -116,5 +126,36 @@ object MonteCarloTreeSearchTest {
       Vector(0, 2, 2),
       Vector(1, 0, 0)))
     assertEquals(InProgress, boardInProgress.checkStatus)
+  }
+
+  @Test
+  def addMinScore(): Unit = {
+    val node = Node(State(1, Board()),None, ArrayBuffer.empty[Node])
+    node.addScore(10)
+    assertEquals(10, node.state.winScore)
+    node.addScore(Int.MinValue)
+    assertEquals(Int.MinValue, node.state.winScore)
+  }
+
+  @Test
+  def findNextStepCustomStart(): Unit = {
+    val board = Board(3, Vector(
+      Vector(2, 1, 0),
+      Vector(0, 2, 0),
+      Vector(1, 0, 1)
+    ))
+    val newBoard = MonteCarloTreeSearch.findNextMove(board, 2)
+    println(newBoard.printBoardFlat())
+  }
+
+  @Test
+  def findNextStepCustomStart2(): Unit = {
+    val board = Board(3, Vector(
+      Vector(0, 0, 0),
+      Vector(0, 1, 0),
+      Vector(0, 0, 0)
+    ))
+    val newBoard = MonteCarloTreeSearch.findNextMove(board, 2)
+    println(newBoard.printBoardFlat())
   }
 }

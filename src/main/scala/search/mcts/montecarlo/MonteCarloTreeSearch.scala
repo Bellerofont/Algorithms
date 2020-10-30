@@ -7,7 +7,7 @@ import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
 
 object MonteCarloTreeSearch {
-  private val WIN_SCORE = 10
+  private val WIN_SCORE = 8
   private val level     = 3
 
   @tailrec
@@ -29,10 +29,10 @@ object MonteCarloTreeSearch {
     if (nodeToExplore.parent.isDefined) backPropagation(nodeToExplore.parent.get, playerNo)
   }
 
-  def simulateRandomPlayout(node: Node): BoardStatus = {
+  def simulateRandomPlayout(node: Node, opponent: Int): BoardStatus = {
     var boardStatus = node.state.board.checkStatus
     var tempState   = node.state
-    if (boardStatus.status == node.state.getOpponent)
+    if (boardStatus.status == opponent)
       node.parent.get.addScore(Int.MinValue)
     else
       while (boardStatus == InProgress) {
@@ -47,7 +47,7 @@ object MonteCarloTreeSearch {
 
   def findNextMove(board: Board, playerNo: Int): Board = {
     val start = System.currentTimeMillis()
-    val end   = start + 60 * getMillisForCurrentLevel
+    val end   = start + 60 //* getMillisForCurrentLevel
 
     val opponent = State.getOpponent(playerNo)
     val state    = State(opponent, board)
@@ -58,7 +58,7 @@ object MonteCarloTreeSearch {
       if (promisingNode.state.board.checkStatus == InProgress) expandNode(promisingNode)
 
       if (promisingNode.childArray.nonEmpty) promisingNode = promisingNode.getRandomChildNode
-      val playoutResult = simulateRandomPlayout(promisingNode)
+      val playoutResult = simulateRandomPlayout(promisingNode, opponent)
 
       backPropagation(promisingNode, playoutResult.status)
     }
@@ -67,6 +67,7 @@ object MonteCarloTreeSearch {
     tree.root = winner
     winner.state.board.printBoard()
     println()
+//    println(winner)
     winner.state.board
   }
 

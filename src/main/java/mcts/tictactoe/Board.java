@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Board {
     int[][] boardValues;
-    int totalMoves;
+//    int totalMoves;
 
     public static final int DEFAULT_BOARD_SIZE = 3;
 
@@ -27,10 +27,10 @@ public class Board {
         this.boardValues = boardValues;
     }
 
-    public Board(int[][] boardValues, int totalMoves) {
-        this.boardValues = boardValues;
-        this.totalMoves = totalMoves;
-    }
+//    public Board(int[][] boardValues, int totalMoves) {
+//        this.boardValues = boardValues;
+//        this.totalMoves = totalMoves;
+//    }
 
     public Board(Board board) {
         int boardLength = board.getBoardValues().length;
@@ -44,7 +44,7 @@ public class Board {
     }
 
     public void performMove(int player, Position p) {
-        this.totalMoves++;
+//        this.totalMoves++;
         boardValues[p.getX()][p.getY()] = player;
     }
 

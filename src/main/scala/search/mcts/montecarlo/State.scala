@@ -10,14 +10,14 @@ case class State(playerNo: Int, board: Board, winScore: Double = 0, visitCount: 
    this.copy(board = performMove(Random.shuffle(board.emptyPositions).head))
   }
 
-  def performMove(position: Position): Board = {
+  def performMove(position: Position, playerNo: Int = this.playerNo): Board = {
     board.performMove(playerNo, position)
   }
 
   def getAllPossibleStates: IndexedSeq[State] = {
     val player = getOpponent
     board.emptyPositions.map { position =>
-      this.copy(playerNo = player, this.performMove(position))
+      this.copy(playerNo = player, this.performMove(position, player))
     }
   }
 

@@ -3,9 +3,11 @@ package mcts.montecarlo;
 import mcts.tictactoe.Board;
 
 import mcts.tictactoe.Position;
+import mcts.tree.Node;
 import mcts.tree.Tree;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -27,7 +29,7 @@ class MonteCarloTreeSearchTest {
     void tearDown() {
     }
 
-    @Test
+    @RepeatedTest(100)
     public void givenEmptyBoard_whenSimulateInterAIPlay_thenGameDraw() {
         int boardSize = 3;
         Board board = new Board(boardSize);
@@ -93,6 +95,15 @@ class MonteCarloTreeSearchTest {
         }
         int winStatus = board.checkStatus();
         assertTrue(winStatus == Board.DRAW || winStatus == Board.P1);
+    }
+
+    @Test
+    public void addMinScore() {
+        Node node = new Node();
+        node.getState().addScore(10);
+        assertEquals(10, node.getState().getWinScore());
+        node.getState().setWinScore(Integer.MIN_VALUE);
+        assertEquals(Integer.MIN_VALUE, node.getState().getWinScore());
     }
 
 }

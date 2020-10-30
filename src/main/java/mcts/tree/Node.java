@@ -70,6 +70,8 @@ public class Node {
     }
 
     public Node getChildWithMaxScore() {
+        System.out.println(this.state.getVisitCount() + " -> " + this.state.getWinScore());
+        childArray.forEach(c -> System.out.println(c.getState().getVisitCount() + " -> "+ c.getState().getWinScore()));
         return Collections.max(this.childArray, Comparator.comparing(c -> c.getState().getVisitCount()));
     }
 

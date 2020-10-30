@@ -55,7 +55,7 @@ public class State {
         this.visitCount = visitCount;
     }
 
-    double getWinScore() {
+    public double getWinScore() {
         return winScore;
     }
 
