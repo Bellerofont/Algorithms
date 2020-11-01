@@ -41,9 +41,6 @@ class MonteCarloTreeSearchTest {
             if (board.checkStatus() != -1) {
                 break;
             }
-            board.printBoard();
-
-            System.out.println();
             player = 3 - player;
         }
         int winStatus = board.checkStatus();
@@ -104,6 +101,14 @@ class MonteCarloTreeSearchTest {
         assertEquals(10, node.getState().getWinScore());
         node.getState().setWinScore(Integer.MIN_VALUE);
         assertEquals(Integer.MIN_VALUE, node.getState().getWinScore());
+    }
+
+    @Test
+    public void nextStepCustom() {
+        int[][] ar = {{2, 1, 0},{0, 2, 0},{1, 0, 1}};
+        Board board = new Board(ar);
+        Board newBoard = mcts.findNextMove(board, 2);
+        assertEquals(2, newBoard.getBoardValues()[2][1]);
     }
 
 }

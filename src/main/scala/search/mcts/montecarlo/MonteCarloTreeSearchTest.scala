@@ -1,7 +1,7 @@
 package search.mcts.montecarlo
 
 import org.junit.jupiter.api.Assertions._
-import org.junit.jupiter.api.{RepeatedTest, Test}
+import org.junit.jupiter.api.{Nested, RepeatedTest, Test}
 import search.mcts.tictactoe.{Board, Draw, InProgress, P1, P2, Position}
 import search.mcts.tree.Node
 
@@ -22,7 +22,6 @@ object MonteCarloTreeSearchTest {
       player = State.getOpponent(player)
     }
     val winStatus = board.checkStatus
-    board.printBoard()
     assertEquals(Draw, winStatus)
   }
 
@@ -96,12 +95,12 @@ object MonteCarloTreeSearchTest {
     MonteCarloTreeSearch.expandNode(rootNode)
     val playoutResult = MonteCarloTreeSearch.simulateRandomPlayout(rootNode.childArray.head, 2)
     MonteCarloTreeSearch.backPropagation(rootNode.childArray.head, playoutResult.status)
-    println(rootNode)
+    assertEquals(1, rootNode.state.visitCount)
 
     MonteCarloTreeSearch.expandNode(rootNode.childArray.head)
     val playoutResult2 = MonteCarloTreeSearch.simulateRandomPlayout(rootNode.childArray.head.childArray.head, 1)
     MonteCarloTreeSearch.backPropagation(rootNode.childArray.head.childArray.head, playoutResult2.status)
-    println(rootNode)
+    assertEquals(2, rootNode.state.visitCount)
   }
 
   @Test
@@ -137,25 +136,35 @@ object MonteCarloTreeSearchTest {
     assertEquals(Int.MinValue, node.state.winScore)
   }
 
-  @Test
-  def findNextStepCustomStart(): Unit = {
-    val board = Board(3, Vector(
-      Vector(2, 1, 0),
-      Vector(0, 2, 0),
-      Vector(1, 0, 1)
-    ))
-    val newBoard = MonteCarloTreeSearch.findNextMove(board, 2)
-    println(newBoard.printBoardFlat())
-  }
 
-  @Test
-  def findNextStepCustomStart2(): Unit = {
-    val board = Board(3, Vector(
-      Vector(0, 0, 0),
-      Vector(0, 1, 0),
-      Vector(0, 0, 0)
-    ))
-    val newBoard = MonteCarloTreeSearch.findNextMove(board, 2)
-    println(newBoard.printBoardFlat())
+  @Nested
+  class findNextStepCustomStart {
+
+    @Test
+    def warmUp(): Unit = {
+      for (i <- 1 to 100000) i + i
+    }
+
+    @RepeatedTest(10)
+    def findNextStepCustomStart1(): Unit = {
+      val board = Board(3, Vector(
+        Vector(2, 1, 0),
+        Vector(0, 2, 0),
+        Vector(1, 0, 1)
+      ))
+      val newBoard = MonteCarloTreeSearch.findNextMove(board, 2)
+      assertEquals(2, newBoard.boardValues(2)(1))
+    }
+
+//    @RepeatedTest(10)
+//    def findNextStepCustomStart2(): Unit = {
+//      val board = Board(3, Vector(
+//        Vector(2, 1, 0),
+//        Vector(2, 2, 0),
+//        Vector(1, 0, 1)
+//      ))
+//      val newBoard = MonteCarloTreeSearch.findNextMove(board, 1)
+//      assertEquals(1, newBoard.boardValues(2)(1))
+//    }
   }
 }

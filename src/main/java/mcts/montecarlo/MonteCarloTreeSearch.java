@@ -58,6 +58,8 @@ public class MonteCarloTreeSearch {
 
         Node winnerNode = rootNode.getChildWithMaxScore();
         tree.setRoot(winnerNode);
+        winnerNode.getState().getBoard().printBoard();
+        System.out.println();
         return winnerNode.getState().getBoard();
     }
 
