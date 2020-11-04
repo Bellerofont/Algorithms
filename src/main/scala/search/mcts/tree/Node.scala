@@ -25,9 +25,9 @@ case class Node(var state: State, parent: Option[Node], childArray: ArrayBuffer[
   def incrementVisit(): Unit = state = state.copy(visitCount = state.visitCount + 1)
 
   def addScore(score: Double): Unit =
-    state =
-      if (score != Int.MinValue && state.winScore != Int.MinValue) state.copy(winScore = state.winScore + score)
-      else state.copy(winScore = score)
+    if (state.winScore != Int.MinValue) state = state.copy(winScore = state.winScore + score)
+
+  def setScore(): Unit = state = state.copy(winScore = Int.MinValue)
 
   override def toString: String =
     s"""
@@ -41,4 +41,12 @@ case class Node(var state: State, parent: Option[Node], childArray: ArrayBuffer[
        |  Board: ${this.state.board}
        |  *****************************************
        |""".stripMargin
+
+  def printAncestry(): Unit = {
+    var c = this
+    while (c.parent.isDefined) {
+      print(s"${c.id} <- ")
+      c = c.parent.get
+    }
+  }
 }

@@ -128,12 +128,20 @@ object MonteCarloTreeSearchTest {
   }
 
   @Test
-  def addMinScore(): Unit = {
+  def setScore(): Unit = {
     val node = Node(State(1, Board()),None, ArrayBuffer.empty[Node])
     node.addScore(10)
     assertEquals(10, node.state.winScore)
-    node.addScore(Int.MinValue)
+    node.setScore()
     assertEquals(Int.MinValue, node.state.winScore)
+  }
+
+  @Test
+  def addMinScoreToParent(): Unit = {
+    val node = Node(State(1, Board()),None, ArrayBuffer.empty[Node])
+    MonteCarloTreeSearch.expandNode(node)
+    node.childArray.head.parent.get.addScore(Int.MinValue)
+    println(node)
   }
 
 
@@ -154,6 +162,21 @@ object MonteCarloTreeSearchTest {
       ))
       val newBoard = MonteCarloTreeSearch.findNextMove(board, 2)
       assertEquals(2, newBoard.boardValues(2)(1))
+    }
+
+    @Test
+    def simulateRandomPlayout(): Unit = {
+      val board = Board(3, Vector(
+        Vector(2, 1, 0),
+        Vector(0, 2, 0),
+        Vector(1, 0, 1)
+      ))
+      val rootNode = Node(State(1, board), None, ArrayBuffer.empty[Node])
+      val node = MonteCarloTreeSearch.selectPromisingNode(rootNode)
+      MonteCarloTreeSearch.expandNode(node)
+      val r = MonteCarloTreeSearch.simulateRandomPlayout(node.childArray(1), 2)
+      MonteCarloTreeSearch.backPropagation(node.childArray(1), r.status)
+      println(node)
     }
 
 //    @RepeatedTest(10)

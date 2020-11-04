@@ -103,12 +103,27 @@ class MonteCarloTreeSearchTest {
         assertEquals(Integer.MIN_VALUE, node.getState().getWinScore());
     }
 
-    @Test
+    @RepeatedTest(10)
     public void nextStepCustom() {
         int[][] ar = {{2, 1, 0},{0, 2, 0},{1, 0, 1}};
         Board board = new Board(ar);
         Board newBoard = mcts.findNextMove(board, 2);
         assertEquals(2, newBoard.getBoardValues()[2][1]);
+    }
+
+    @RepeatedTest(10)
+    public void simulateRandomPlayout() {
+        int[][] ar = {{2, 1, 0},{0, 2, 0},{1, 0, 1}};
+        Board board = new Board(ar);
+        State state = new State(board);
+        state.setPlayerNo(1);
+        Node rootNode = new Node(state);
+        Node node = mcts.selectPromisingNode(rootNode);
+        mcts.expandNode(node);
+        Node nodeToExplore = node.getRandomChildNode();
+        int r = mcts.simulateRandomPlayout(nodeToExplore);
+        mcts.backPropogation(nodeToExplore, r);
+        System.out.println(node);
     }
 
 }

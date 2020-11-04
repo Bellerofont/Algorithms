@@ -1,9 +1,6 @@
 package mcts.tree;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import mcts.montecarlo.State;
 
@@ -11,6 +8,7 @@ public class Node {
     State state;
     Node parent;
     List<Node> childArray;
+    UUID id = UUID.randomUUID();
 
     public Node() {
         this.state = new State();
@@ -70,9 +68,21 @@ public class Node {
     }
 
     public Node getChildWithMaxScore() {
-        System.out.println(this.state.getVisitCount() + " -> " + this.state.getWinScore());
-        childArray.forEach(c -> System.out.println(c.getState().getVisitCount() + " -> "+ c.getState().getWinScore()));
+        System.out.println(this.id + ": " + this.state.getVisitCount() + " -> " + this.state.getWinScore());
+        childArray.forEach(c -> System.out.println(c.id + ": " + c.getState().getVisitCount() + " -> "+ c.getState().getWinScore()));
         return Collections.max(this.childArray, Comparator.comparing(c -> c.getState().getVisitCount()));
+    }
+
+    public String toString() {
+        return this.getState().getWinScore() + " -> " + this.getState().getVisitCount() + "\n" + Arrays.deepToString(this.getState().getBoard().getBoardValues()) + ":\n" + this.childArray;
+    }
+
+    public void printAncestry() {
+        Node node = this;
+        while (node != null) {
+            System.out.print(node.id.toString() + " <- ");
+            node = node.getParent();
+        }
     }
 
 }

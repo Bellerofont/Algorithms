@@ -30,11 +30,14 @@ object MonteCarloTreeSearch {
   }
 
   def simulateRandomPlayout(node: Node, opponent: Int): BoardStatus = {
-    var boardStatus = node.state.board.checkStatus
-    var tempState   = node.state
-    if (boardStatus.status == opponent)
-      node.parent.get.addScore(Int.MinValue)
-    else
+    val tempNode = node.copy()
+    var boardStatus = tempNode.state.board.checkStatus
+    var tempState   = tempNode.state
+    if (boardStatus.status == opponent) {
+      tempState.board.printBoardFlat()
+      tempNode.parent.get.setScore()
+      println(tempNode.printAncestry())
+    } else
       while (boardStatus == InProgress) {
         tempState = tempState.togglePlayer()
         tempState = tempState.randomPlay()
@@ -47,7 +50,7 @@ object MonteCarloTreeSearch {
 
   def findNextMove(board: Board, playerNo: Int): Board = {
     val start = System.currentTimeMillis()
-    val end   = start + 60 //* getMillisForCurrentLevel
+    val end   = start + 60 * getMillisForCurrentLevel
 
     val opponent = State.getOpponent(playerNo)
     val state    = State(opponent, board)

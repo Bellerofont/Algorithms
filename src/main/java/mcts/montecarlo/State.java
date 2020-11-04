@@ -27,7 +27,7 @@ public class State {
         this.board = new Board(board);
     }
 
-    Board getBoard() {
+    public Board getBoard() {
         return board;
     }
 

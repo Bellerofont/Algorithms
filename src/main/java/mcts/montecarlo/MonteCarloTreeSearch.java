@@ -63,7 +63,7 @@ public class MonteCarloTreeSearch {
         return winnerNode.getState().getBoard();
     }
 
-    private Node selectPromisingNode(Node rootNode) {
+    public Node selectPromisingNode(Node rootNode) {
         Node node = rootNode;
         while (node.getChildArray().size() != 0) {
             node = UCT.findBestNodeWithUCT(node);
@@ -71,7 +71,7 @@ public class MonteCarloTreeSearch {
         return node;
     }
 
-    private void expandNode(Node node) {
+    void expandNode(Node node) {
         List<State> possibleStates = node.getState().getAllPossibleStates();
         possibleStates.forEach(state -> {
             Node newNode = new Node(state);
@@ -81,7 +81,7 @@ public class MonteCarloTreeSearch {
         });
     }
 
-    private void backPropogation(Node nodeToExplore, int playerNo) {
+    public void backPropogation(Node nodeToExplore, int playerNo) {
         Node tempNode = nodeToExplore;
         while (tempNode != null) {
             tempNode.getState().incrementVisit();
@@ -91,13 +91,15 @@ public class MonteCarloTreeSearch {
         }
     }
 
-    private int simulateRandomPlayout(Node node) {
+    public int simulateRandomPlayout(Node node) {
         Node tempNode = new Node(node);
         State tempState = tempNode.getState();
         int boardStatus = tempState.getBoard().checkStatus();
 
         if (boardStatus == opponent) {
             tempNode.getParent().getState().setWinScore(Integer.MIN_VALUE);
+            node.printAncestry();
+            System.out.println();
             return boardStatus;
         }
         while (boardStatus == Board.IN_PROGRESS) {
