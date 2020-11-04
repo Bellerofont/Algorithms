@@ -17,8 +17,6 @@ case class Node(var state: State, parent: Option[Node], childArray: ArrayBuffer[
   def getRandomChildNode: Node = Random.shuffle(childArray).head
 
   def getChildWithMaxScore: Node = {
-    println(id -> (state.visitCount, state.winScore))
-    println(childArray.map(c => c.id -> (c.state.visitCount, c.state.winScore)).mkString("\n"))
     childArray.maxBy(node => (node.state.winScore, -node.state.visitCount))
   }
 

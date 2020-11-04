@@ -120,11 +120,16 @@ object MonteCarloTreeSearchTest {
       Vector(1, 2, 1),
       Vector(2, 1, 2)))
     assertEquals(P2, boardP2Win.checkStatus)
-    val boardInProgress= Board(3, Vector(
+    val boardInProgress = Board(3, Vector(
       Vector(0, 0, 1),
       Vector(0, 2, 2),
       Vector(1, 0, 0)))
     assertEquals(InProgress, boardInProgress.checkStatus)
+    val P1WinExtra = Board(3, Vector(
+      Vector(2, 1, 0),
+      Vector(2, 2, 0),
+      Vector(1, 1, 1)))
+    assertEquals(P1, P1WinExtra.checkStatus)
   }
 
   @Test
@@ -178,16 +183,5 @@ object MonteCarloTreeSearchTest {
       MonteCarloTreeSearch.backPropagation(node.childArray(1), r.status)
       println(node)
     }
-
-//    @RepeatedTest(10)
-//    def findNextStepCustomStart2(): Unit = {
-//      val board = Board(3, Vector(
-//        Vector(2, 1, 0),
-//        Vector(2, 2, 0),
-//        Vector(1, 0, 1)
-//      ))
-//      val newBoard = MonteCarloTreeSearch.findNextMove(board, 1)
-//      assertEquals(1, newBoard.boardValues(2)(1))
-//    }
   }
 }

@@ -7,8 +7,8 @@ import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
 
 object MonteCarloTreeSearch {
-  private val WIN_SCORE = 8
-  private val level     = 3
+  private val WIN_SCORE = 4
+  private val level     = 2
 
   @tailrec
   final def selectPromisingNode(rootNode: Node): Node =
@@ -34,9 +34,7 @@ object MonteCarloTreeSearch {
     var boardStatus = tempNode.state.board.checkStatus
     var tempState   = tempNode.state
     if (boardStatus.status == opponent) {
-      tempState.board.printBoardFlat()
       tempNode.parent.get.setScore()
-      println(tempNode.printAncestry())
     } else
       while (boardStatus == InProgress) {
         tempState = tempState.togglePlayer()
@@ -70,7 +68,6 @@ object MonteCarloTreeSearch {
     tree.root = winner
     winner.state.board.printBoard()
     println()
-//    println(winner)
     winner.state.board
   }
 

@@ -32,9 +32,9 @@ case class Board(boardSize: Int, boardValues: Vector[Vector[Int]]) {
       i <- 0 until boardSize
     } yield boardValues(i)(boardSize - 1 - i))
 
-    val result = (rows :++ columns :+ diag1 :+ diag2).find(_ != 0)
+    val result = rows :++ columns :+ diag1 :+ diag2
 
-    (result, emptyPositions.isEmpty) match {
+    (result.find(_ != 0), emptyPositions.isEmpty) match {
       case (Some(1), _) => P1
       case (Some(2), _) => P2
       case (_, true)    => Draw
